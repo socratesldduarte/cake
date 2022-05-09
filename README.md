@@ -1,64 +1,50 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Cake Project
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project was build in Laravel 9 as a technical challenge.
+All challenge requisites are described bellow:
 
-## About Laravel
+Olá,
+Estamos felizes por te ter aqui no nosso processo seletivo! 😊
+A próxima etapa constitui um desafio técnico sobre PHP e Laravel. Abaixo estão as orientações.
+Desafio:
+Realizar o desenvolvimento da proposta aa seguir utilizando ao máximo as funcionalidades do framework Laravel em sua versão mais recente.
+- Criar um CRUD de rotas de API para o cadastro de bolos.
+- Os bolos deverão ter Nome, Peso (em gramas), Valor, Quantidade disponível e uma lista
+  de e-mail de interessados.
+- Após o cadastro de e-mails interessados, caso haja bolo disponível, o sistema deve enviar
+  um e-mail para os interessados sobre a disponibilidade do bolo.
+  Casos a avaliar:
+  -Pode ocorrer de 50.000 clientes se cadastrarem e o processo de envio de emails não deve
+  ser algo impeditivo.
+  Você pode desenvolver utilizando as sugestões abaixo.
+- Utilizar fila para o envio de e-mails, caso não domine o conceito de filas poderá ser feito
+  sem. ref. (https://laravel.com/docs/8.x/queues)
+- Utilizar Resources para construção da API. ref
+  (https://laravel.com/docs/8.x/eloquent-resources)
+  Boa sorte! 🍀
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## The implementation
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The second requisite indicates that the client (order) list will be attached to a cake instance. To permit it, I implemented 
+a json field "order" in Cake. So each "order" will be added to this field with "new" status, and processed for a command 
+that will send e-mails if a new order is added for a cake with available amount.<br>
+The usual implementation is make a Order model with a many to many relationship between Cake and Order - but I implemented as a json in cake to follow the requisite.<br>
+I created the resource routes plus the "make" endpoint (to allow "add" a new cooked cake) and a "order" endpoint (to allow
+order a cake).<br>
+I didn't add unit and integration tests. Also I didn't add a "Cake Service". So these are a TODO list for this project.<br>
+I added a postman collection to allow call all implemented endpoints.<br>
+There is a observer in Cake Model to generate e-mails in cake insert or update - the e-mail is queued in database. To dispatch e-mails execute "php artisan queue:work".
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Installation
 
-## Learning Laravel
+To install the project, clone the repository git@github.com:socratesldduarte/cake.git
+Then go to project folder, copy the .env.example to .env and set the e-mail configuration (SMTP) in .env
+Start the project: "sail ./vendor/bin/sail up"
+In your project folder, check the "docker ps" to list containes and get the "cake_laravel" container hash.
+To open this container, execute "docker exec -it <hash> bash"
+To generate (or to regenerate), execute "php artisan migrate:fresh --seed" in the docker container cli (after executing the last line command).
+To test endpoints, use the endpoints in the postman collection file.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## TODO List
+Use a service layer between Controller and Model (Only service access the Model) - and the service has the business rules.<br>
+Create unit and integration tests.
